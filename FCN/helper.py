@@ -105,16 +105,8 @@ def gen_batch_function(data_folder, image_shape):
 			for image_file in image_paths[batch_i:batch_i+batch_size]:
 				gt_image_file = label_paths[os.path.basename(image_file)]
 				# Re-size to image_shape
-				#use new imresize as scipy.misc is deprecated particularly in Colab
-				#image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
-				#gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
-				from skimage.transform import resize
-				#from skimage import *
-				#image = resize(scipy.misc.imread(image_file), image_shape)
-				#gt_image = resize(scipy.misc.imread(gt_image_file), image_shape)
-				import imageio
-				image = resize(imageio.imread(image_file), image_shape)
-				gt_image = resize(imageio.imread(gt_image_file), image_shape)
+				image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
+				gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
 
 				# Create "one-hot-like" labels by class
 				gt_bg = np.all(gt_image == background_color, axis=2)
@@ -140,10 +132,7 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
 	:return: Output for for each test image
 	"""
 	for image_file in glob(os.path.join(data_folder, 'image_2', '*.png')):
-		#image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
-		from skimage.transform import resize
-		import imageio
-		image = resize(imageio.imread(image_file), image_shape)
+		image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
 
 		# Run inference
 		im_softmax = sess.run(
@@ -155,12 +144,8 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
 		segmentation = (im_softmax > 0.5).reshape(image_shape[0], image_shape[1], 1)
 		# Create mask based on segmentation to apply to original image
 		mask = np.dot(segmentation, np.array([[0, 255, 0, 127]]))
-		#mask = scipy.misc.toimage(mask, mode="RGBA")
-		#street_im = scipy.misc.toimage(image)
-		import PIL
-		from PIL import Image
-		mask = PIL.Image.fromarray(mask, mode="RGBA")
-		street_im = PIL.Image.fromarray(image)
+		mask = scipy.misc.toimage(mask, mode="RGBA")
+		street_im = scipy.misc.toimage(image)
 		street_im.paste(mask, box=None, mask=mask)
 
 		yield os.path.basename(image_file), np.array(street_im)
