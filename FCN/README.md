@@ -6,7 +6,8 @@ In this project, you'll label the pixels of a road in images using a Fully Convo
 ##### GPU
 We will use Google Colab to run this program. Save all files in your Google drive and then open main.ipynb from there in Google Colab to run it.
 ##### Frameworks and Packages
-NOTE : Google Colab will have all the packages below installed automatically. You do not need to install.
+NOTE : Google Colab will have all the packages below installed automatically. You do not need to install these.
+
 Make sure you have the following is installed:
  - [Python 3](https://www.python.org/)
  - [TensorFlow](https://www.tensorflow.org/)
